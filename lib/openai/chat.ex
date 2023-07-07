@@ -5,10 +5,17 @@ defmodule OpenAI.Chat do
 
   @base_url "/v1/chat/completions"
 
-  def url(), do: @base_url
+  def url(config) do
+    api_type = config.api_type || Config.api_type()
+
+    case api_type do
+      :azure -> "/chat/completions"
+      _ -> @base_url
+    end
+  end
 
   def fetch(params, config \\ %Config{}) do
-    url()
+    url(config)
     |> Client.api_post(params, config)
   end
 end
